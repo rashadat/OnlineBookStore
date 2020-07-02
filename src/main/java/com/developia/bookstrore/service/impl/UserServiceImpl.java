@@ -5,26 +5,26 @@ import com.developia.bookstrore.exception.NotFoundException;
 import com.developia.bookstrore.model.Session;
 import com.developia.bookstrore.model.User;
 import com.developia.bookstrore.model.enums.Role;
-import com.developia.bookstrore.model.enums.SessionStatus;
 import com.developia.bookstrore.repository.UserRepository;
 import com.developia.bookstrore.service.SessionService;
 import com.developia.bookstrore.service.UserService;
+import com.developia.bookstrore.util.PasswordHasher;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final SessionService sessionService;
+    private final PasswordHasher passwordHasher;
 
-    public UserServiceImpl(UserRepository userRepository, SessionService sessionService){
 
+    public UserServiceImpl(UserRepository userRepository,
+                           SessionService sessionService,
+                            PasswordHasher passwordHasher){
         this.userRepository = userRepository;
         this.sessionService= sessionService;
+        this.passwordHasher= passwordHasher;
     }
 
     @Override
@@ -33,9 +33,10 @@ public class UserServiceImpl implements UserService {
         if(!user.getPassword().equals(user.getConfirmPassword()))
             throw new IllegalArgumentException("Password mismatch");
 
+        String hashPassword= passwordHasher.hash(user.getPassword().toCharArray());
         user.setRole(Role.USER);
-        user.setPassword(encode(user.getPassword()));
-        user.setConfirmPassword(encode(user.getPassword()));
+        user.setPassword(hashPassword);
+        user.setConfirmPassword(hashPassword);
 
 
         userRepository.save(user);
@@ -44,6 +45,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(String username, String password) {
+
+        Session session = sessionService.findActiveSession();
+        if (session != null) return session.getUser();
 
         User user;
 
@@ -54,7 +58,10 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException(username + " NOT FOUND");
 
         }
-        if(!user.getPassword().equals(password))
+
+        String hashPassword = passwordHasher.hash(password.toCharArray());
+
+        if(!user.getPassword().equals(hashPassword))
             throw new AccessDeniedException("INCORRECT PASSWORD");
 
             sessionService.create(user);
@@ -68,10 +75,7 @@ sessionService.delete();
 
     }
 
-    private String encode(String password){
-        return "encoded password";
 
-    }
 
 
 }
