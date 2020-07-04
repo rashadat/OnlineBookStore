@@ -22,7 +22,37 @@ public class BookServiceImpl  implements BookService {
     }
 
     @Override
+    public void delete(String isbn) {
+        Book book = bookRepository.findByIsbn(isbn);
+        bookRepository.delete(book);
+
+    }
+
+    @Override
+    public void update(Book book) {
+        Book oldBook = bookRepository.findByIsbn(book.getIsbn());
+        oldBook.setAuthor(book.getAuthor());
+        oldBook.setName(book.getName());
+        oldBook.setPrice(book.getPrice());
+        oldBook.setPageSize(book.getPageSize());
+        oldBook.setPublishDate(book.getPublishDate());
+        oldBook.setDescription(book.getDescription());
+        bookRepository.save(oldBook);
+
+    }
+
+    @Override
+    public Book find(String isbn) {
+        return bookRepository.findByIsbn(isbn);
+    }
+
+    @Override
     public List<Book> findAll() {
         return bookRepository.findAll();
+    }
+
+    @Override
+    public Book findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn);
     }
 }
