@@ -43,6 +43,12 @@ public class PageController {
         model.addAttribute("book", new Book());
         return "bookCreate";
     }
+
+    @GetMapping("/bookPage")
+    public String bookPage(){
+        return "bookPage";
+    }
+
     @GetMapping("/books")
     public String books(Model model){
         List<Book> books =bookService.findAll();

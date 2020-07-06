@@ -47,7 +47,7 @@ public class BookController {
     @PostMapping("/update")
     public String update(Model model, @ModelAttribute Book book) {
         bookService.update(book);
-        return "bookUpdate";
+        return "home";
     }
 
 
