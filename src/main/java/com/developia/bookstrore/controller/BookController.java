@@ -22,7 +22,7 @@ public class BookController {
     public String findByIsbn(Model model, @RequestParam("isbn") String isbn){
         Book book = bookService.findByIsbn(isbn);
         model.addAttribute("book", book);
-        return "bookDelete";
+        return "bookUpdate";
     }
 
     @GetMapping("/find")
@@ -33,22 +33,33 @@ public class BookController {
     }
 
     @PostMapping("/create")
-    public String createBook(@ModelAttribute Book book){
+    public String create(@ModelAttribute Book book){
         bookService.create(book);
         return "redirect:/home";
     }
 
-    @PostMapping("/delete")
-    public String delete(@RequestParam("isbn") String isbn) {
-        bookService.delete(isbn);
-        return "bookDelete";
-    }
-
-    @PostMapping("/update")
-    public String update(Model model, @ModelAttribute Book book) {
+    @PostMapping(value = "/update", params = "action=Update")
+    public String update(@ModelAttribute Book book) {
         bookService.update(book);
-        return "home";
+        return "redirect:/home";
     }
 
+    @PostMapping(value = "/update", params = "action=Delete")
+    public String delete(@ModelAttribute Book book) {
+        bookService.delete(book.getIsbn());
+        return "redirect:/home";
+    }
 
+    @GetMapping(value = "/view")
+    public String view(Model model, @RequestParam ("isbn") String isbn) {
+        Book book = bookService.findByIsbn(isbn);
+        model.addAttribute("book", book);
+        return "bookView";
+
+    }
+    @PostMapping("/addToCart")
+    public String create(@RequestParam("isbn") String isbn){
+        bookService.addToCart(isbn);
+        return "redirect:/home";
+    }
 }

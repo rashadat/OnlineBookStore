@@ -20,7 +20,9 @@ public class PageController {
     }
 
     @GetMapping (value = {"/" , "/home"})
-    public String home() {
+    public String home(Model model) {
+        List<Book> books = bookService.findAll();
+        model.addAttribute("books", books);
         return "home";
     }
 
@@ -56,11 +58,7 @@ public class PageController {
         return "books";
     }
 
-    @GetMapping("/bookDelete")
-    public String bookDelete(Model model){
-        model.addAttribute("book", new Book());
-        return "bookDelete";
-    }
+
 
     @GetMapping(value = "/bookUpdate")
     public String bookUpdate(Model model) {

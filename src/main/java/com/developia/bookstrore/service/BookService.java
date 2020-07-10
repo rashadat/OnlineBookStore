@@ -17,4 +17,6 @@ public interface BookService {
 
 
     Book findByIsbn(String isbn);
+
+    void addToCart(String isbn);
 }

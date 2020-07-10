@@ -17,9 +17,9 @@
 <!-- Include header.html -->
 <th:block th:include="/header"></th:block>
 
-<h2 class="center">Book Update</h2>
+<h2 class="center">Book Update & Book Delete</h2>
 
-<form th:action="@{/book/find}" method="get" class="center">
+<form th:action="@{/book/findByIsbn}" method="get" class="center">
     <p>Isbn:   <input th:name="isbn"/> </p>
     <td class="center">
         <input type="submit" value="Search"/>
@@ -45,7 +45,6 @@
             <td>Price</td>
             <td><input type="text" th:field="${book.price}"/></td>
         </tr>
-
         <tr>
             <td>Description</td>
             <td><input type="text" th:field="${book.description}"/></td>
@@ -61,7 +60,8 @@
         <tr>
             <td>&nbsp;</td>
             <td class="center">
-                <input type="submit" value="Update"/>
+                <input type="submit" name="action" value="Delete"/>
+                <input type="submit" name="action" value="Update"/>
                 <input type="reset" value="Reset"/>
             </td>
             <td>&nbsp;</td>
