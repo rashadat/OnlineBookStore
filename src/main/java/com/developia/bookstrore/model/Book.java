@@ -6,12 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Builder
@@ -31,4 +30,19 @@ public class Book {
     private Integer pageSize;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate publishDate;
+    @OneToMany
+    private List<Review> reviews= new ArrayList<>();
+
+
+    public BigDecimal getRating(){
+
+        BigDecimal totalRating = BigDecimal.ZERO;
+        for( Review review : reviews)
+          totalRating =  totalRating.add(review.getRating());
+
+        if(reviews.size()== 0) return  null;
+
+        return totalRating.divide(BigDecimal.valueOf(reviews.size()));
+
+    }
 }

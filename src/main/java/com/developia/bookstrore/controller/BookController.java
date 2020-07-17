@@ -2,20 +2,21 @@ package com.developia.bookstrore.controller;
 
 import com.developia.bookstrore.model.Book;
 import com.developia.bookstrore.service.BookService;
-import org.springframework.boot.autoconfigure.data.ConditionalOnRepositoryType;
+import com.developia.bookstrore.service.CartService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping(path = "/book")
 public class BookController {
 
     private final BookService bookService;
-    public BookController(BookService bookService){
+    private final CartService cartService;
+
+    public BookController(BookService bookService, CartService cartService){
         this.bookService=bookService;
+        this.cartService = cartService;
     }
 
     @PostMapping("/findByIsbn")
@@ -58,8 +59,13 @@ public class BookController {
 
     }
     @PostMapping("/addToCart")
-    public String create(@RequestParam("isbn") String isbn){
-        bookService.addToCart(isbn);
+    public String addToCart(@RequestParam("isbn") String isbn){
+        cartService.addBook(isbn);
+        return "redirect:/home";
+    }
+    @PostMapping("/removeFromCart")
+    public String removeFromCart(@RequestParam("isbn") String isbn){
+        cartService.removeBook(isbn);
         return "redirect:/home";
     }
 }
