@@ -1,6 +1,7 @@
 package com.developia.bookstrore.controller;
 
 import com.developia.bookstrore.model.Book;
+import com.developia.bookstrore.model.Card;
 import com.developia.bookstrore.model.Cart;
 import com.developia.bookstrore.model.User;
 import com.developia.bookstrore.service.BookService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -76,6 +78,18 @@ public class PageController {
         Cart cart=cartService.findActiveCart();
         model.addAttribute("cart",cart);
         return "cartPage";
+    }
+
+    @GetMapping("/checkoutPage")
+    public String checkoutPage(Model model){
+
+        Cart cart =cartService.findActiveCart();
+        BigDecimal totalPrice = cart.getTotalPrice();
+        model.addAttribute("card", new Card());
+        model.addAttribute("total", totalPrice);
+
+        return "checkoutPage";
+
     }
 
 

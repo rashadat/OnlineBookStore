@@ -4,35 +4,33 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.LifecycleState;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 @Data
-@Entity
+@Entity(name = "orders")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Cart {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @OneToOne
-    private User user;
+    private String orderNumber;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
-            name= "carts_books",
-            joinColumns = {@JoinColumn(name="cart_id")},
-            inverseJoinColumns = {@JoinColumn(name="book_id")}
+            name = "orders_books",
+            joinColumns = {@JoinColumn(name = "order_id")},
+            inverseJoinColumns = {@JoinColumn(name = "book_id")}
     )
     private List<Book> books = new ArrayList<>();
+    @ManyToOne
+    private User user;
+    private LocalDateTime dateTime;
 
-    public BigDecimal getTotalPrice(){
-        BigDecimal totalPrice =BigDecimal.ZERO;
-        for(Book book : books)
-         totalPrice =   totalPrice.add(book.getPrice());
-        return totalPrice;
-    }
 }

@@ -1,6 +1,8 @@
 package com.developia.bookstrore.controller;
 
 import com.developia.bookstrore.model.Book;
+import com.developia.bookstrore.model.Card;
+import com.developia.bookstrore.model.Review;
 import com.developia.bookstrore.service.BookService;
 import com.developia.bookstrore.service.CartService;
 import org.springframework.stereotype.Controller;
@@ -55,6 +57,7 @@ public class BookController {
     public String view(Model model, @RequestParam ("isbn") String isbn) {
         Book book = bookService.findByIsbn(isbn);
         model.addAttribute("book", book);
+        model.addAttribute("review", new Review());
         return "bookView";
 
     }
@@ -66,6 +69,18 @@ public class BookController {
     @PostMapping("/removeFromCart")
     public String removeFromCart(@RequestParam("isbn") String isbn){
         cartService.removeBook(isbn);
+        return "redirect:/home";
+    }
+
+    @PostMapping("/review")
+    public String review(@RequestParam("isbn") String isbn,@ModelAttribute Review review){
+       bookService.review(isbn, review);
+        return "redirect:/home";
+    }
+
+    @PostMapping("/checkout")
+    public String checkout(@ModelAttribute Card card){
+        cartService.checkout(card);
         return "redirect:/home";
     }
 }

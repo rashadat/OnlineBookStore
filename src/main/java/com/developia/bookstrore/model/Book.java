@@ -30,7 +30,7 @@ public class Book {
     private Integer pageSize;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate publishDate;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Review> reviews= new ArrayList<>();
 
 
